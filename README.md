@@ -25,7 +25,7 @@ sudo su
 
 ```
 wget https://raw.githubusercontent.com/blitzh/install_openvas/main/openvas_install.sh && \
-	chmod +x openvas_install.sh
+chmod +x openvas_install.sh
 ```
 
 ### ⚙ Step #3: Execute the script.
