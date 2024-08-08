@@ -14,7 +14,7 @@ fi
 
 apt install --no-install-recommends --assume-yes build-essential curl cmake pkg-config gnupg
 apt install -y libglib2.0-dev libgpgme-dev libgnutls28-dev uuid-dev libssh-gcrypt-dev libhiredis-dev libxml2-dev libpcap-dev libnet1-dev libpaho-mqtt-dev
-apt install -y libldap2-dev libradcli-dev libpq-dev postgresql-server-dev-15 libical-dev xsltproc rsync libbsd-dev
+apt install -y libldap2-dev libradcli-dev libpq-dev postgresql-server-dev-15 libical-dev xsltproc rsync libbsd-dev libssl-dev
 apt install -y --no-install-recommends texlive-latex-extra texlive-fonts-recommended xmlstarlet zip rpm fakeroot dpkg nsis gpgsm wget sshpass openssh-client socat snmp python3 smbclient python3-lxml gnutls-bin xml-twig-tools
 apt install -y libmicrohttpd-dev gcc-mingw-w64 libpopt-dev libunistring-dev heimdal-dev perl-base bison libgcrypt20-dev libksba-dev nmap libjson-glib-dev libsnmp-dev
 apt install -y python3 python3-pip python3-setuptools python3-packaging python3-wrapt python3-cffi python3-psutil python3-lxml python3-defusedxml python3-paramiko python3-redis python3-gnupg python3-paho-mqtt python3-venv python3-impacket
@@ -27,17 +27,20 @@ export PATH=$PATH:$INSTALL_PREFIX/sbin
 export SOURCE_DIR=$HOME/source
 export BUILD_DIR=$HOME/build
 export INSTALL_DIR=$HOME/install
+
 export GVM_LIBS_VERSION=22.10.0
 export GVMD_VERSION=23.8.1
 export PG_GVM_VERSION=22.6.5
 export GSA_VERSION=23.2.1
 export GSAD_VERSION=22.11.0
-export OPENVAS_SMB_VERSION=22.5.6
-export OPENVAS_SCANNER_VERSION=23.8.3
+export OPENVAS_SMB_VERSION=22.5.3
+export OPENVAS_SCANNER_VERSION=23.8.2
+export OPENVAS_DAEMON=23.8.2
 export OSPD_OPENVAS_VERSION=22.7.1
 export NOTUS_VERSION=22.6.3
 export GNUPGHOME=/tmp/openvas-gnupg
 export OPENVAS_GNUPG_HOME=/etc/openvas/gnupg
+
 
 # Create user
 
@@ -70,6 +73,8 @@ gpg --import /tmp/GBCommunitySigningKey.asc
 curl -f -L https://github.com/greenbone/gvm-libs/archive/refs/tags/v$GVM_LIBS_VERSION.tar.gz -o $SOURCE_DIR/gvm-libs-$GVM_LIBS_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/gvm-libs/releases/download/v$GVM_LIBS_VERSION/gvm-libs-v$GVM_LIBS_VERSION.tar.gz.asc -o $SOURCE_DIR/gvm-libs-$GVM_LIBS_VERSION.tar.gz.asc
 
+gpg --verify $SOURCE_DIR/gvm-libs-$GVM_LIBS_VERSION.tar.gz.asc $SOURCE_DIR/gvm-libs-$GVM_LIBS_VERSION.tar.gz
+
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/gvm-libs-$GVM_LIBS_VERSION.tar.gz
 
 mkdir -p $BUILD_DIR/gvm-libs && cd $BUILD_DIR/gvm-libs
@@ -92,6 +97,8 @@ cp -rv $INSTALL_DIR/gvm-libs/* /
 
 curl -f -L https://github.com/greenbone/gvmd/archive/refs/tags/v$GVMD_VERSION.tar.gz -o $SOURCE_DIR/gvmd-$GVMD_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/gvmd/releases/download/v$GVMD_VERSION/gvmd-$GVMD_VERSION.tar.gz.asc -o $SOURCE_DIR/gvmd-$GVMD_VERSION.tar.gz.asc
+
+gpg --verify $SOURCE_DIR/gvmd-$GVMD_VERSION.tar.gz.asc $SOURCE_DIR/gvmd-$GVMD_VERSION.tar.gz
 
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/gvmd-$GVMD_VERSION.tar.gz
 
@@ -122,6 +129,8 @@ cp -rv $INSTALL_DIR/gvmd/* /
 curl -f -L https://github.com/greenbone/pg-gvm/archive/refs/tags/v$PG_GVM_VERSION.tar.gz -o $SOURCE_DIR/pg-gvm-$PG_GVM_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/pg-gvm/releases/download/v$PG_GVM_VERSION/pg-gvm-$PG_GVM_VERSION.tar.gz.asc -o $SOURCE_DIR/pg-gvm-$PG_GVM_VERSION.tar.gz.asc
 
+gpg --verify $SOURCE_DIR/pg-gvm-$PG_GVM_VERSION.tar.gz.asc $SOURCE_DIR/pg-gvm-$PG_GVM_VERSION.tar.gz
+
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/pg-gvm-$PG_GVM_VERSION.tar.gz
 
 mkdir -p $BUILD_DIR/pg-gvm && cd $BUILD_DIR/pg-gvm
@@ -144,6 +153,8 @@ cp -rv $INSTALL_DIR/pg-gvm/* /
 curl -f -L https://github.com/greenbone/gsa/releases/download/v$GSA_VERSION/gsa-dist-$GSA_VERSION.tar.gz -o $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/gsa/releases/download/v$GSA_VERSION/gsa-dist-$GSA_VERSION.tar.gz.asc -o $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz.asc
 
+gpg --verify $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz.asc $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz
+
 mkdir -p $SOURCE_DIR/gsa-$GSA_VERSION
 tar -C $SOURCE_DIR/gsa-$GSA_VERSION -xvzf $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz
 
@@ -154,6 +165,8 @@ cp -rv $SOURCE_DIR/gsa-$GSA_VERSION/* $INSTALL_PREFIX/share/gvm/gsad/web/
 
 curl -f -L https://github.com/greenbone/gsad/archive/refs/tags/v$GSAD_VERSION.tar.gz -o $SOURCE_DIR/gsad-$GSAD_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/gsad/releases/download/v$GSAD_VERSION/gsad-$GSAD_VERSION.tar.gz.asc -o $SOURCE_DIR/gsad-$GSAD_VERSION.tar.gz.asc
+
+gpg --verify $SOURCE_DIR/gsad-$GSAD_VERSION.tar.gz.asc $SOURCE_DIR/gsad-$GSAD_VERSION.tar.gz
 
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/gsad-$GSAD_VERSION.tar.gz
 
@@ -181,6 +194,8 @@ cp -rv $INSTALL_DIR/gsad/* /
 curl -f -L https://github.com/greenbone/openvas-smb/archive/refs/tags/v$OPENVAS_SMB_VERSION.tar.gz -o $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/openvas-smb/releases/download/v$OPENVAS_SMB_VERSION/openvas-smb-v$OPENVAS_SMB_VERSION.tar.gz.asc -o $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz.asc
 
+gpg --verify $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz.asc $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
+
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/openvas-smb-$OPENVAS_SMB_VERSION.tar.gz
 
 mkdir -p $BUILD_DIR/openvas-smb && cd $BUILD_DIR/openvas-smb
@@ -201,6 +216,8 @@ cp -rv $INSTALL_DIR/openvas-smb/* /
 
 curl -f -L https://github.com/greenbone/openvas-scanner/archive/refs/tags/v$OPENVAS_SCANNER_VERSION.tar.gz -o $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/openvas-scanner/releases/download/v$OPENVAS_SCANNER_VERSION/openvas-scanner-v$OPENVAS_SCANNER_VERSION.tar.gz.asc -o $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz.asc
+
+gpg --verify $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz.asc $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
 
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/openvas-scanner-$OPENVAS_SCANNER_VERSION.tar.gz
 
@@ -223,10 +240,16 @@ make DESTDIR=$INSTALL_DIR/openvas-scanner install
 
 cp -rv $INSTALL_DIR/openvas-scanner/* /
 
+# As of version 23.0 the openvasd_server configuration needs to be set to a running OpenVASD instance.
+printf "table_driven_lsc = yes\n" | tee /etc/openvas/openvas.conf
+printf "openvasd_server = http://127.0.0.1:3000\n" | tee -a /etc/openvas/openvas.conf
+
 # ospd-openvas
 
 curl -f -L https://github.com/greenbone/ospd-openvas/archive/refs/tags/v$OSPD_OPENVAS_VERSION.tar.gz -o $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
 curl -f -L https://github.com/greenbone/ospd-openvas/releases/download/v$OSPD_OPENVAS_VERSION/ospd-openvas-v$OSPD_OPENVAS_VERSION.tar.gz.asc -o $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz.asc
+
+gpg --verify $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz.asc $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
 
 tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/ospd-openvas-$OSPD_OPENVAS_VERSION.tar.gz
 
@@ -238,20 +261,45 @@ python3 -m pip install --root=$INSTALL_DIR/ospd-openvas --no-warn-script-locatio
 
 cp -rv $INSTALL_DIR/ospd-openvas/* /
 
+
+# openvasd
+# OpenVASD is used for detecting vulnerable products.
+# Currently only the notus is integrated into gvmd. That means that openvas is using openvasd for static version checks if a scan with ssh credentials is started and packages got found.
+# If you want to enable the full functionality you either need to adapt the openvasd.service file and remove the --mode service_notus flag and create a configuration file within /etc/openvasd/openvasd.toml or adapt the arguments within openvasd.service if you don’t want to create a configuration file.
+
+curl -f -L https://github.com/greenbone/openvas-scanner/archive/refs/tags/v$OPENVAS_DAEMON.tar.gz -o $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON.tar.gz
+curl -f -L https://github.com/greenbone/openvas-scanner/releases/download/v$OPENVAS_DAEMON/openvas-scanner-v$OPENVAS_DAEMON.tar.gz.asc -o $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON.tar.gz.asc
+
+gpg --verify $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON.tar.gz.asc $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON.tar.gz
+
+tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON.tar.gz
+
+mkdir -p $INSTALL_DIR/openvasd/usr/local/bin
+cd $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON/rust/openvasd
+cargo build --release
+
+cd $SOURCE_DIR/openvas-scanner-$OPENVAS_DAEMON/rust/scannerctl
+cargo build --release
+
+cp -v ../target/release/openvasd $INSTALL_DIR/openvasd/usr/local/bin/
+cp -v ../target/release/scannerctl $INSTALL_DIR/openvasd/usr/local/bin/
+cp -rv $INSTALL_DIR/openvasd/* /
+
+
 # notus-scanner
 
-curl -f -L https://github.com/greenbone/notus-scanner/archive/refs/tags/v$NOTUS_VERSION.tar.gz -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
-curl -f -L https://github.com/greenbone/notus-scanner/releases/download/v$NOTUS_VERSION/notus-scanner-v$NOTUS_VERSION.tar.gz.asc -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz.asc
+# curl -f -L https://github.com/greenbone/notus-scanner/archive/refs/tags/v$NOTUS_VERSION.tar.gz -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
+# curl -f -L https://github.com/greenbone/notus-scanner/releases/download/v$NOTUS_VERSION/notus-scanner-v$NOTUS_VERSION.tar.gz.asc -o $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz.asc
 
-tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
+# tar -C $SOURCE_DIR -xvzf $SOURCE_DIR/notus-scanner-$NOTUS_VERSION.tar.gz
 
-cd $SOURCE_DIR/notus-scanner-$NOTUS_VERSION
+# cd $SOURCE_DIR/notus-scanner-$NOTUS_VERSION
 
-mkdir -p $INSTALL_DIR/notus-scanner
+# mkdir -p $INSTALL_DIR/notus-scanner
 
-python3 -m pip install --root=$INSTALL_DIR/notus-scanner --no-warn-script-location .
+# python3 -m pip install --root=$INSTALL_DIR/notus-scanner --no-warn-script-location .
 
-cp -rv $INSTALL_DIR/notus-scanner/* /
+# cp -rv $INSTALL_DIR/notus-scanner/* /
 
 # greenbone-feed-sync
 
@@ -293,6 +341,7 @@ mkdir -p /var/lib/gvm
 mkdir -p /var/lib/openvas
 mkdir -p /var/lib/notus
 mkdir -p /var/log/gvm
+mkdir -p /run/gvmd
 
 chown -R gvm:gvm /var/lib/gvm
 chown -R gvm:gvm /var/lib/openvas
@@ -372,30 +421,30 @@ EOF
 
 cp -v $BUILD_DIR/ospd-openvas.service /etc/systemd/system/
 
-cat << EOF > $BUILD_DIR/notus-scanner.service
-[Unit]
-Description=Notus Scanner
-Documentation=https://github.com/greenbone/notus-scanner
-After=mosquitto.service
-Wants=mosquitto.service
-ConditionKernelCommandLine=!recovery
+# cat << EOF > $BUILD_DIR/notus-scanner.service
+# [Unit]
+# Description=Notus Scanner
+# Documentation=https://github.com/greenbone/notus-scanner
+# After=mosquitto.service
+# Wants=mosquitto.service
+# ConditionKernelCommandLine=!recovery
 
-[Service]
-Type=exec
-User=gvm
-RuntimeDirectory=notus-scanner
-RuntimeDirectoryMode=2775
-PIDFile=/run/notus-scanner/notus-scanner.pid
-ExecStart=/usr/local/bin/notus-scanner --foreground --products-directory /var/lib/notus/products --log-file /var/log/gvm/notus-scanner.log
-SuccessExitStatus=SIGKILL
-Restart=always
-RestartSec=60
+# [Service]
+# Type=exec
+# User=gvm
+# RuntimeDirectory=notus-scanner
+# RuntimeDirectoryMode=2775
+# PIDFile=/run/notus-scanner/notus-scanner.pid
+# ExecStart=/usr/local/bin/notus-scanner --foreground --products-directory /var/lib/notus/products --log-file /var/log/gvm/notus-scanner.log
+# SuccessExitStatus=SIGKILL
+# Restart=always
+# RestartSec=60
 
-[Install]
-WantedBy=multi-user.target
-EOF
+# [Install]
+# WantedBy=multi-user.target
+# EOF
 
-cp -v $BUILD_DIR/notus-scanner.service /etc/systemd/system/
+# cp -v $BUILD_DIR/notus-scanner.service /etc/systemd/system/
 
 cat << EOF > $BUILD_DIR/gvmd.service
 [Unit]
@@ -449,20 +498,49 @@ cp -v $BUILD_DIR/gsad.service /etc/systemd/system/
 
 systemctl daemon-reload
 
+cat << EOF > $BUILD_DIR/openvasd.service
+[Unit]
+Description=OpenVASD
+Documentation=https://github.com/greenbone/openvas-scanner/tree/main/rust/openvasd
+ConditionKernelCommandLine=!recovery
+[Service]
+Type=exec
+User=gvm
+RuntimeDirectory=openvasd
+RuntimeDirectoryMode=2775
+ExecStart=/usr/local/bin/openvasd --mode service_notus --products /var/lib/notus/products --advisories /var/lib/notus/advisories --listening 0.0.0.0:3000
+SuccessExitStatus=SIGKILL
+Restart=always
+RestartSec=60
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cp -v $BUILD_DIR/openvasd.service /etc/systemd/system/
+
 # Download Openvas feeds.
 echo "Download Openvas feeds. This is going to take time do not interrupt this process."
 /usr/local/bin/greenbone-feed-sync
 
 # Enable the services
-systemctl enable notus-scanner
+# systemctl enable notus-scanner
 systemctl enable ospd-openvas
 systemctl enable gvmd
 systemctl enable gsad
+systemctl enable openvasd
 
 # Start the services
-systemctl start notus-scanner
+# systemctl start notus-scanner
 systemctl start ospd-openvas
 systemctl start gvmd
 systemctl start gsad
+systemctl start openvasd
 
 echo "OpenVAS installation has been completed."
+
+echo "OpenVAS Status..."
+systemctl status ospd-openvas
+systemctl status gvmd
+systemctl status gsad
+systemctl status openvasd
+
