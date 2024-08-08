@@ -24,7 +24,7 @@ sudo su
 ### ⚙ Step #2: Download the script and make it executable.
 
 ```
-wget https://raw.githubusercontent.com/Kastervo/OpenVAS-Installation/master/openvas_install.sh && \
+wget https://raw.githubusercontent.com/blitzh/install_openvas/main/openvas_install.sh && \
 	chmod +x openvas_install.sh
 ```
 
@@ -43,8 +43,14 @@ Grab the admin password right after the "Creating the admin user." message.
 Verify the services are running without errors.
 ```
 sudo systemctl status notus-scanner
+```
+```
 sudo systemctl status ospd-openvas
+```
+```
 sudo systemctl status gvmd
+```
+```
 sudo systemctl status gsad
 ```
 ### ⚙ (Optional) Step #6: Cleanup the installation files.
@@ -98,4 +104,4 @@ This repository is licensed under the Apache License 2.0 license.
 
 # Disclaimer
 
-The contents in this repository provided AS IS with absolutely NO warranty. KASTERVO LTD is not responsible and without any limitation, for any errors, omissions, losses or damages arising from the use of this repository.
+The contents in this repository provided AS IS with absolutely NO warranty.
